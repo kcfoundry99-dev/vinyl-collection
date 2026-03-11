@@ -476,16 +476,41 @@
             document.getElementById('modal').classList.add('flex');
         }
 
-        // Preview image
+        // Preview and crop image
         function previewImage(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    document.getElementById('coverPreview').innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                    cropToSquare(e.target.result, 'coverPreview');
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        // Crop image to square
+        function cropToSquare(imageSrc, previewId) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Calculate square dimensions
+                const size = Math.min(img.width, img.height);
+                const x = (img.width - size) / 2;
+                const y = (img.height - size) / 2;
+                
+                canvas.width = 400;
+                canvas.height = 400;
+                
+                // Draw cropped square
+                ctx.drawImage(img, x, y, size, size, 0, 0, 400, 400);
+                
+                const croppedUrl = canvas.toDataURL('image/jpeg', 0.9);
+                document.getElementById(previewId).innerHTML = 
+                    `<img src="${croppedUrl}" class="w-full h-full object-cover">`;
+            };
+            img.src = imageSrc;
         }
 
         // Discogs Search
@@ -554,9 +579,26 @@
                     document.getElementById('tracklist').value = tracks;
                 }
 
+                // Load and crop cover image
                 if (data.images && data.images.length > 0) {
-                    document.getElementById('coverPreview').innerHTML = 
-                        `<img src="${data.images[0].uri}" class="w-full h-full object-cover">`;
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const size = Math.min(img.width, img.height);
+                        const x = (img.width - size) / 2;
+                        const y = (img.height - size) / 2;
+                        
+                        canvas.width = 400;
+                        canvas.height = 400;
+                        ctx.drawImage(img, x, y, size, size, 0, 0, 400, 400);
+                        
+                        const croppedUrl = canvas.toDataURL('image/jpeg', 0.9);
+                        document.getElementById('coverPreview').innerHTML = 
+                            `<img src="${croppedUrl}" class="w-full h-full object-cover">`;
+                    };
+                    img.crossOrigin = 'anonymous';
+                    img.src = data.images[0].uri;
                 }
 
                 alert('✓ Record information loaded!');
