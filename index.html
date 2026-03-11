@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X Foundry Vinyl Collection</title>
+    <title>X Foundry - Vinyl Vault</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #1a1a1a;
-            --secondary: #4a4a4a;
-            --accent: #c9a227;
-            --bg: #f5f5f3;
-            --card-bg: #ffffff;
-            --border: #e5e5e3;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --red: #e63946;
+            --blue: #4895ef;
+            --gold: #d4a574;
+            --text: #ffffff;
+            --text-muted: #8a8a9a;
         }
         
         * {
@@ -25,290 +26,351 @@
         }
         
         body {
-            font-family: 'Inter', 'Noto Sans TC', sans-serif;
-            background: var(--bg);
-            color: var(--primary);
-            line-height: 1.6;
+            font-family: 'Outfit', 'Noto Sans TC', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
             -webkit-font-smoothing: antialiased;
         }
         
-        .font-serif {
-            font-family: 'Playfair Display', serif;
-        }
-        
-        .vinyl-card {
-            transition: all 0.3s ease;
-        }
-        
-        .vinyl-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-        }
-        
-        .vinyl-card .cover-container {
+        .vinyl-grooves {
             position: relative;
-            overflow: hidden;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 50%, #1a1a1a 100%);
+            box-shadow: 
+                0 0 0 8px #222,
+                0 0 0 12px #333,
+                0 25px 50px rgba(0,0,0,0.5);
         }
         
-        .vinyl-card .cover-container::after {
+        .vinyl-grooves::before {
             content: '';
             position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.3) 100%);
-            opacity: 0;
-            transition: opacity 0.3s;
+            inset: 20px;
+            border-radius: 50%;
+            background: repeating-radial-gradient(
+                #111 0,
+                #111 2px,
+                #1a1a1a 2px,
+                #1a1a1a 4px
+            );
         }
         
-        .vinyl-card:hover .cover-container::after {
-            opacity: 1;
+        .vinyl-grooves::after {
+            content: '';
+            position: absolute;
+            inset: 60px;
+            border-radius: 50%;
+            background: repeating-radial-gradient(
+                #151515 0,
+                #151515 1px,
+                #1a1a1a 1px,
+                #1a1a1a 3px
+            );
+        }
+        
+        .vinyl-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold) 0%, #a67c52 100%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .vinyl-center::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #1a1a1a;
         }
         
         .btn-primary {
-            background: var(--primary);
+            background: var(--red);
             color: white;
-            padding: 14px 28px;
-            font-size: 13px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            font-weight: 500;
-            transition: all 0.3s;
+            padding: 16px 24px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         .btn-primary:hover {
-            background: var(--accent);
-            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(230, 57, 70, 0.3);
         }
         
         .btn-secondary {
-            background: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 14px 28px;
-            font-size: 13px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            font-weight: 500;
-            transition: all 0.3s;
+            background: var(--blue);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         .btn-secondary:hover {
-            background: var(--primary);
-            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(72, 149, 239, 0.3);
         }
         
-        input, select, textarea {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .stat-value {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            font-weight: 600;
-            line-height: 1;
-        }
-        
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
+        .btn-tertiary {
+            background: #1e1e28;
+            color: var(--text-muted);
+            padding: 14px 20px;
+            border-radius: 14px;
             font-weight: 500;
-            letter-spacing: -0.5px;
+            font-size: 14px;
+            transition: all 0.2s;
+            border: 1px solid #2a2a35;
         }
         
-        .mono-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--secondary);
+        .btn-tertiary:hover {
+            background: #252530;
+            color: var(--text);
         }
         
-        /* Smooth scrollbar */
-        ::-webkit-scrollbar {
-            width: 4px;
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
         }
         
-        ::-webkit-scrollbar-track {
-            background: transparent;
+        .menu-item {
+            padding: 8px 16px;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s;
         }
         
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
+        .menu-item.active {
+            color: var(--text);
+        }
+        
+        .collection-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        
+        .collection-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .cover-shadow {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+        
+        input {
+            background: #1e1e28;
+            border: 1px solid #2a2a35;
+            color: white;
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus {
+            border-color: var(--red);
         }
     </style>
 </head>
-<body class="min-h-screen">
-    <!-- Navigation -->
-    <nav class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-[#e5e5e3] z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 flex items-center justify-center">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                        <circle cx="16" cy="16" r="14" stroke="#1a1a1a" stroke-width="1.5"/>
-                        <circle cx="16" cy="16" r="5" stroke="#1a1a1a" stroke-width="1.5"/>
-                        <circle cx="16" cy="16" r="1.5" fill="#1a1a1a"/>
+<body>
+    <!-- Header -->
+    <header class="sticky top-0 bg-[#0a0a0f]/90 backdrop-blur-md z-50 border-b border-[#1e1e28]">
+        <div class="flex justify-between items-center px-6 py-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-[#e63946] flex items-center justify-center">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                        <circle cx="12" cy="12" r="10" fill="#1a1a1a"/>
+                        <circle cx="12" cy="12" r="3" fill="#fff"/>
+                        <circle cx="12" cy="12" r="1" fill="#000"/>
                     </svg>
                 </div>
-                <div>
-                    <h1 class="font-serif text-xl font-semibold tracking-tight">X Foundry</h1>
-                    <p class="mono-label">Vinyl Collection</p>
-                </div>
+                <span class="font-semibold text-lg tracking-wide">X FOUNDRY</span>
             </div>
-            <button onclick="openModal()" class="btn-primary">
-                + Add Record
-            </button>
+            <div class="flex gap-1">
+                <span class="menu-item active">Home</span>
+                <span class="menu-item">Scanner</span>
+                <span class="menu-item">Collection</span>
+                <span class="menu-item">Settings</span>
+            </div>
         </div>
-    </nav>
+    </header>
 
     <!-- Hero Section -->
-    <section class="py-16 px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col lg:flex-row gap-12 items-end">
-                <div class="flex-1">
-                    <p class="mono-label mb-3">The Collection</p>
-                    <h1 class="font-serif text-5xl lg:text-7xl font-medium leading-tight mb-4">
-                        Curated<br>Sounds
-                    </h1>
-                    <p class="text-[#4a4a4a] text-lg max-w-md">
-                        A carefully curated selection of vinyl records, spanning genres and decades.
-                    </p>
-                </div>
-                
-                <!-- Stats -->
-                <div class="flex gap-12">
-                    <div>
-                        <p class="mono-label mb-1">Total Records</p>
-                        <p class="stat-value" id="totalCount">0</p>
-                    </div>
-                    <div>
-                        <p class="mono-label mb-1">Artists</p>
-                        <p class="stat-value" id="artistCount">0</p>
-                    </div>
-                    <div>
-                        <p class="mono-label mb-1">Est. Value</p>
-                        <p class="stat-value" id="totalValue">$0</p>
-                    </div>
-                </div>
+    <section class="py-12 px-6 flex flex-col items-center">
+        <div class="vinyl-grooves mb-8" id="vinylDisplay">
+            <div class="vinyl-center"></div>
+        </div>
+        
+        <h1 class="text-3xl font-bold mb-2 text-center">Value Your Vinyl</h1>
+        <p class="text-[#8a8a9a] text-center max-w-md mb-8">
+            AI-powered vinyl record identification and valuation
+        </p>
+        
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-4 w-full max-w-sm mb-8">
+            <button onclick="openModal()" class="btn-primary">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Take Photo
+            </button>
+            <button onclick="openModal()" class="btn-secondary">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Upload Image
+            </button>
+            <button onclick="captureWithAI()" class="btn-tertiary col-span-2">
+                🔍 Or Search Manually
+            </button>
+        </div>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-4 w-full max-w-md">
+            <div class="stat-card">
+                <div class="text-2xl font-bold" id="totalCount">0</div>
+                <div class="text-xs text-[#8a8a9a] mt-1">Records</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-2xl font-bold" id="artistCount">0</div>
+                <div class="text-xs text-[#8a8a9a] mt-1">Artists</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-2xl font-bold" id="totalValue">$0</div>
+                <div class="text-xs text-[#8a8a9a] mt-1">Value</div>
             </div>
         </div>
     </section>
 
-    <!-- Search & Filter -->
-    <section class="px-6 pb-8">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex gap-4 border-b border-[#e5e5e3] pb-4">
-                <input type="text" id="searchInput" placeholder="Search by artist, album, or year..." 
-                    class="flex-1 bg-transparent text-xl outline-none placeholder-[#9a9a9a]">
-            </div>
+    <!-- Collection Section -->
+    <section class="px-6 pb-12">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-semibold">My Collection</h2>
+            <span class="text-sm text-[#8a8a9a]">Swipe for more →</span>
+        </div>
+        
+        <!-- Search -->
+        <div class="mb-6">
+            <input type="text" id="searchInput" placeholder="Search by artist, album..." class="w-full">
+        </div>
+        
+        <!-- Grid -->
+        <div id="collectionGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         </div>
     </section>
 
-    <!-- Collection Grid -->
-    <section class="px-6 pb-16">
-        <div class="max-w-7xl mx-auto">
-            <div id="collectionGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                <!-- Cards will be inserted here -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Add/Edit Modal -->
-    <div id="modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div class="p-8">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="font-serif text-2xl" id="modalTitle">Add New Record</h2>
-                    <button onclick="closeModal()" class="text-[#4a4a4a] hover:text-black">
+    <!-- Add Modal -->
+    <div id="modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#12121a] rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold" id="modalTitle">Add Record</h2>
+                    <button onclick="closeModal()" class="text-[#8a8a9a] hover:text-white">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
                     </button>
                 </div>
 
-                <form id="vinylForm" class="space-y-6">
-                    <!-- Cover Image -->
-                    <div class="mb-8">
-                        <p class="mono-label mb-3">Album Cover</p>
-                        <div class="flex gap-6">
-                            <div id="coverPreview" class="w-40 h-40 bg-[#f5f5f3] rounded flex items-center justify-center overflow-hidden flex-shrink-0">
-                                <span class="text-[#9a9a9a] text-sm">No Image</span>
+                <form id="vinylForm" class="space-y-4">
+                    <!-- Cover -->
+                    <div class="mb-6">
+                        <label class="block text-sm text-[#8a8a9a] mb-2">Album Cover</label>
+                        <div class="flex gap-4">
+                            <div id="coverPreview" class="w-28 h-28 bg-[#1e1e28] rounded-xl flex items-center justify-center overflow-hidden">
+                                <span class="text-[#8a8a9a] text-xs">No Image</span>
                             </div>
-                            <div class="flex flex-col gap-3 justify-center">
+                            <div class="flex-1 flex flex-col gap-2">
                                 <input type="file" id="coverImage" accept="image/*" class="hidden" onchange="previewImage(event)">
-                                <label for="coverImage" class="btn-secondary text-center cursor-pointer text-sm">
-                                    Upload Image
+                                <label for="coverImage" class="btn-tertiary text-center text-sm cursor-pointer">
+                                    Upload
                                 </label>
-                                <button type="button" onclick="captureWithAI()" class="btn-primary text-center text-sm">
-                                    ⚡ Discogs Search
+                                <button type="button" onclick="captureWithAI()" class="btn-primary text-sm">
+                                    ⚡ Discogs
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-6">
-                        <div>
-                            <p class="mono-label mb-2">Album Title *</p>
-                            <input type="text" id="albumName" required 
-                                class="w-full bg-[#f5f5f3] border-0 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-black">
-                        </div>
-                        <div>
-                            <p class="mono-label mb-2">Artist *</p>
-                            <input type="text" id="artistName" required 
-                                class="w-full bg-[#f5f5f3] border-0 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-black">
-                        </div>
+                    <div>
+                        <label class="block text-sm text-[#8a8a9a] mb-1">Album Title *</label>
+                        <input type="text" id="albumName" required class="w-full">
                     </div>
 
-                    <div class="grid grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm text-[#8a8a9a] mb-1">Artist *</label>
+                        <input type="text" id="artistName" required class="w-full">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <p class="mono-label mb-2">Year</p>
-                            <input type="number" id="releaseYear" 
-                                class="w-full bg-[#f5f5f3] border-0 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-black">
+                            <label class="block text-sm text-[#8a8a9a] mb-1">Year</label>
+                            <input type="number" id="releaseYear" class="w-full">
                         </div>
                         <div>
-                            <p class="mono-label mb-2">Format</p>
-                            <select id="format" 
-                                class="w-full bg-[#f5f5f3] border-0 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-black">
+                            <label class="block text-sm text-[#8a8a9a] mb-1">Format</label>
+                            <select id="format" class="w-full bg-[#1e1e28] border border-[#2a2a35] text-white px-4 py-3 rounded-xl">
                                 <option value="LP">LP</option>
                                 <option value="EP">EP</option>
                                 <option value="Single">Single</option>
-                                <option value="Box Set">Box Set</option>
-                                <option value="7\"">7"</option>
-                                <option value="10\"">10"</option>
+                                <option value="7&quot;">7"</option>
                             </select>
                         </div>
-                        <div>
-                            <p class="mono-label mb-2">Label</p>
-                            <input type="text" id="label" 
-                                class="w-full bg-[#f5f5f3] border-0 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-black">
-                        </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-6">
+                    <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <p class="mono-label mb-2">Purchase Price</p>
-                            <input type="number" id="purchasePrice" placeholder="$0" 
-                                class="w-full bg-[#f5f5f3] border-0 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-black">
+                            <label class="block text-sm text-[#8a8a9a] mb-1">Purchase Price</label>
+                            <input type="number" id="purchasePrice" class="w-full" placeholder="$0">
                         </div>
                         <div>
-                            <p class="mono-label mb-2">Current Value</p>
-                            <input type="number" id="currentValue" placeholder="$0" 
-                                class="w-full bg-[#f5f5f3] border-0 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-black">
+                            <label class="block text-sm text-[#8a8a9a] mb-1">Current Value</label>
+                            <input type="number" id="currentValue" class="w-full" placeholder="$0">
                         </div>
                     </div>
 
                     <div>
-                        <p class="mono-label mb-2">Tracklist</p>
-                        <textarea id="tracklist" rows="4" placeholder="A1. Track One&#10;A2. Track Two..." 
-                            class="w-full bg-[#f5f5f3] border-0 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-black resize-none"></textarea>
+                        <label class="block text-sm text-[#8a8a9a] mb-1">Label</label>
+                        <input type="text" id="label" class="w-full">
                     </div>
 
                     <div>
-                        <p class="mono-label mb-2">Notes</p>
-                        <textarea id="notes" rows="2" placeholder="Personal notes about this record..." 
-                            class="w-full bg-[#f5f5f3] border-0 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-black resize-none"></textarea>
+                        <label class="block text-sm text-[#8a8a9a] mb-1">Tracklist</label>
+                        <textarea id="tracklist" rows="3" class="w-full bg-[#1e1e28] border border-[#2a2a35] text-white px-4 py-3 rounded-xl resize-none" placeholder="A1. Track One..."></textarea>
                     </div>
 
-                    <div class="flex gap-4 pt-4">
-                        <button type="button" onclick="closeModal()" class="flex-1 btn-secondary">Cancel</button>
-                        <button type="submit" class="flex-1 btn-primary">Save Record</button>
+                    <div class="flex gap-3 pt-4">
+                        <button type="button" onclick="closeModal()" class="flex-1 btn-tertiary">Cancel</button>
+                        <button type="submit" class="flex-1 btn-primary">Save</button>
                     </div>
                 </form>
             </div>
@@ -316,7 +378,6 @@
     </div>
 
     <script>
-        // Sample data - sophisticated selection
         let vinyls = [
             {
                 id: 1,
@@ -327,21 +388,10 @@
                 cover: "https://upload.wikimedia.org/wikipedia/en/9/9c/MilesDavisKindofBlue.jpg",
                 purchasePrice: 1200,
                 currentValue: 4500,
-                label: "Columbia Records"
+                label: "Columbia"
             },
             {
                 id: 2,
-                album: "A Love Supreme",
-                artist: "John Coltrane",
-                year: 1965,
-                format: "LP",
-                cover: "https://upload.wikimedia.org/wikipedia/en/7/7a/A_Love_Supreme.jpg",
-                purchasePrice: 800,
-                currentValue: 3200,
-                label: "Impulse! Records"
-            },
-            {
-                id: 3,
                 album: "Blue Train",
                 artist: "John Coltrane",
                 year: 1958,
@@ -352,97 +402,77 @@
                 label: "Blue Note"
             },
             {
-                id: 4,
-                album: "In a Silent Way",
-                artist: "Miles Davis",
-                year: 1969,
+                id: 3,
+                album: "A Love Supreme",
+                artist: "John Coltrane",
+                year: 1965,
                 format: "LP",
-                cover: "https://upload.wikimedia.org/wikipedia/en/4/47/Miles_Davis_-_In_a_Silent_Way.jpg",
-                purchasePrice: 500,
-                currentValue: 1800,
-                label: "Columbia Records"
-            },
-            {
-                id: 5,
-                album: "Bitches Brew",
-                artist: "Miles Davis",
-                year: 1970,
-                format: "LP",
-                cover: "https://upload.wikimedia.org/wikipedia/en/5/55/Miles_Davis_-_Bitches_Brew.jpg",
-                purchasePrice: 900,
-                currentValue: 2200,
-                label: "Columbia Records"
+                cover: "https://upload.wikimedia.org/wikipedia/en/7/7a/A_Love_Supreme.jpg",
+                purchasePrice: 800,
+                currentValue: 3200,
+                label: "Impulse!"
             }
         ];
 
         let editingId = null;
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             renderCollection();
             updateStats();
         });
 
-        // Render collection
         function renderCollection(filter = '') {
             const grid = document.getElementById('collectionGrid');
             const filtered = vinyls.filter(v => 
                 v.album.toLowerCase().includes(filter.toLowerCase()) ||
-                v.artist.toLowerCase().includes(filter.toLowerCase()) ||
-                (v.year && v.year.toString().includes(filter))
+                v.artist.toLowerCase().includes(filter.toLowerCase())
             );
 
             if (filtered.length === 0) {
                 grid.innerHTML = `
-                    <div class="col-span-full text-center py-20">
-                        <div class="text-6xl mb-4">🎵</div>
-                        <p class="text-[#4a4a4a] font-serif text-xl">No records found</p>
+                    <div class="col-span-full text-center py-12 text-[#8a8a9a]">
+                        <div class="text-5xl mb-3">💿</div>
+                        <p>No records yet</p>
                     </div>
                 `;
                 return;
             }
 
             grid.innerHTML = filtered.map(vinyl => `
-                <div class="vinyl-card bg-white cursor-pointer group" onclick="editVinyl(${vinyl.id})">
-                    <div class="cover-container aspect-square bg-[#f5f5f3] relative">
+                <div class="collection-card cursor-pointer" onclick="editVinyl(${vinyl.id})">
+                    <div class="aspect-square bg-[#1e1e28] relative cover-shadow">
                         ${vinyl.cover ? 
-                            `<img src="${vinyl.cover}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500">` :
+                            `<img src="${vinyl.cover}" class="w-full h-full object-cover">` :
                             `<div class="w-full h-full flex items-center justify-center text-4xl">💿</div>`
                         }
-                        <div class="absolute top-3 left-3 bg-white/90 px-2 py-1 text-[10px] uppercase tracking-wider">
-                            ${vinyl.format}
-                        </div>
                     </div>
                     <div class="p-4">
-                        <h3 class="font-medium text-sm leading-tight mb-1 truncate">${vinyl.album}</h3>
-                        <p class="text-[#4a4a4a] text-xs truncate">${vinyl.artist}</p>
-                        <div class="flex justify-between items-center mt-3 pt-3 border-t border-[#e5e5e3]">
-                            <span class="text-[#9a9a9a] text-xs">${vinyl.year || '—'}</span>
-                            <span class="text-sm font-medium">$${vinyl.currentValue?.toLocaleString() || 0}</span>
+                        <h3 class="font-medium text-sm truncate">${vinyl.album}</h3>
+                        <p class="text-[#8a8a9a] text-xs truncate">${vinyl.artist}</p>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-[#8a8a9a] text-xs">${vinyl.year || '—'}</span>
+                            <span class="text-sm font-semibold" style="color: var(--gold)">$${vinyl.currentValue?.toLocaleString() || 0}</span>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Update stats
         function updateStats() {
             document.getElementById('totalCount').textContent = vinyls.length;
             document.getElementById('artistCount').textContent = [...new Set(vinyls.map(v => v.artist))].length;
             document.getElementById('totalValue').textContent = '$' + vinyls.reduce((sum, v) => sum + (v.currentValue || 0), 0).toLocaleString();
         }
 
-        // Search
         document.getElementById('searchInput').addEventListener('input', (e) => {
             renderCollection(e.target.value);
         });
 
-        // Modal functions
         function openModal() {
             editingId = null;
-            document.getElementById('modalTitle').textContent = 'Add New Record';
+            document.getElementById('modalTitle').textContent = 'Add Record';
             document.getElementById('vinylForm').reset();
-            document.getElementById('coverPreview').innerHTML = '<span class="text-[#9a9a9a] text-sm">No Image</span>';
+            document.getElementById('coverPreview').innerHTML = '<span class="text-[#8a8a9a] text-xs">No Image</span>';
             document.getElementById('modal').classList.remove('hidden');
             document.getElementById('modal').classList.add('flex');
         }
@@ -466,7 +496,6 @@
             document.getElementById('currentValue').value = vinyl.currentValue;
             document.getElementById('label').value = vinyl.label || '';
             document.getElementById('tracklist').value = vinyl.tracklist || '';
-            document.getElementById('notes').value = vinyl.notes || '';
 
             if (vinyl.cover) {
                 document.getElementById('coverPreview').innerHTML = `<img src="${vinyl.cover}" class="w-full h-full object-cover">`;
@@ -476,7 +505,6 @@
             document.getElementById('modal').classList.add('flex');
         }
 
-        // Preview and crop image
         function previewImage(event) {
             const file = event.target.files[0];
             if (file) {
@@ -488,127 +516,98 @@
             }
         }
 
-        // Crop image to square
         function cropToSquare(imageSrc, previewId) {
             const img = new Image();
             img.onload = function() {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                
-                // Calculate square dimensions
                 const size = Math.min(img.width, img.height);
                 const x = (img.width - size) / 2;
                 const y = (img.height - size) / 2;
                 
-                canvas.width = 400;
-                canvas.height = 400;
+                canvas.width = 300;
+                canvas.height = 300;
+                ctx.drawImage(img, x, y, size, size, 0, 0, 300, 300);
                 
-                // Draw cropped square
-                ctx.drawImage(img, x, y, size, size, 0, 0, 400, 400);
-                
-                const croppedUrl = canvas.toDataURL('image/jpeg', 0.9);
-                document.getElementById(previewId).innerHTML = 
-                    `<img src="${croppedUrl}" class="w-full h-full object-cover">`;
+                document.getElementById(previewId).innerHTML = `<img src="${canvas.toDataURL()}" class="w-full h-full object-cover">`;
             };
             img.src = imageSrc;
         }
 
-        // Discogs Search
         async function captureWithAI() {
-            const searchTerm = prompt('Enter album or artist name to search:');
+            const searchTerm = prompt('Enter album or artist name:');
             if (!searchTerm) return;
 
             const btn = event.target;
-            const originalText = btn.innerHTML;
             btn.innerHTML = 'Searching...';
             btn.disabled = true;
 
             try {
-                const response = await fetch(`https://api.discogs.com/database/search?q=${encodeURIComponent(searchTerm)}&type=release&per_page=8`, {
-                    headers: {
-                        'User-Agent': 'XFoundryVinyl/1.0'
-                    }
+                const response = await fetch(`https://api.discogs.com/database/search?q=${encodeURIComponent(searchTerm)}&type=release&per_page=6`, {
+                    headers: { 'User-Agent': 'XFoundryVinyl/1.0' }
                 });
                 const data = await response.json();
 
                 if (data.results && data.results.length > 0) {
-                    let resultsText = 'Search Results:\n\n';
+                    let resultsText = 'Found:\n\n';
                     data.results.forEach((item, index) => {
-                        const title = item.title.length > 50 ? item.title.substring(0, 47) + '...' : item.title;
-                        resultsText += `${index + 1}. ${title} (${item.year || 'N/A'})\n`;
+                        resultsText += `${index + 1}. ${item.title.substring(0, 40)}\n`;
                     });
-                    resultsText += '\nEnter number to select:';
+                    resultsText += '\nEnter number:';
 
                     const choice = prompt(resultsText);
                     if (choice && choice >= 1 && choice <= data.results.length) {
-                        const selected = data.results[parseInt(choice) - 1];
-                        await loadReleaseDetails(selected.id);
+                        await loadReleaseDetails(data.results[parseInt(choice) - 1].id);
                     }
                 } else {
-                    alert('No results found. Try a different search term.');
+                    alert('No results found');
                 }
             } catch (error) {
-                console.error('Search error:', error);
-                alert('Search failed. Please try again.');
+                alert('Search failed');
             }
 
-            btn.innerHTML = originalText;
+            btn.innerHTML = '⚡ Discogs';
             btn.disabled = false;
         }
 
-        // Load release details
         async function loadReleaseDetails(releaseId) {
             try {
                 const response = await fetch(`https://api.discogs.com/releases/${releaseId}`, {
-                    headers: {
-                        'User-Agent': 'XFoundryVinyl/1.0'
-                    }
+                    headers: { 'User-Agent': 'XFoundryVinyl/1.0' }
                 });
                 const data = await response.json();
 
                 document.getElementById('albumName').value = data.title || '';
-                
                 const artistMatch = data.title.match(/^(.+?)\s*-/);
                 document.getElementById('artistName').value = artistMatch ? artistMatch[1].trim() : '';
-                
                 document.getElementById('releaseYear').value = data.year || '';
                 document.getElementById('label').value = data.label?.[0] || '';
                 
                 if (data.tracklist) {
-                    const tracks = data.tracklist.map(t => t.position + '. ' + t.title).join('\n');
-                    document.getElementById('tracklist').value = tracks;
+                    document.getElementById('tracklist').value = data.tracklist.map(t => t.position + '. ' + t.title).join('\n');
                 }
 
-                // Load and crop cover image
                 if (data.images && data.images.length > 0) {
                     const img = new Image();
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         const size = Math.min(img.width, img.height);
-                        const x = (img.width - size) / 2;
-                        const y = (img.height - size) / 2;
-                        
-                        canvas.width = 400;
-                        canvas.height = 400;
-                        ctx.drawImage(img, x, y, size, size, 0, 0, 400, 400);
-                        
-                        const croppedUrl = canvas.toDataURL('image/jpeg', 0.9);
-                        document.getElementById('coverPreview').innerHTML = 
-                            `<img src="${croppedUrl}" class="w-full h-full object-cover">`;
+                        canvas.width = 300;
+                        canvas.height = 300;
+                        ctx.drawImage(img, (img.width - size)/2, (img.height - size)/2, size, size, 0, 0, 300, 300);
+                        document.getElementById('coverPreview').innerHTML = `<img src="${canvas.toDataURL()}" class="w-full h-full object-cover">`;
                     };
                     img.crossOrigin = 'anonymous';
                     img.src = data.images[0].uri;
                 }
 
-                alert('✓ Record information loaded!');
+                alert('✓ Loaded!');
             } catch (error) {
-                console.error('Load details error:', error);
-                alert('Could not load details.');
+                alert('Could not load');
             }
         }
 
-        // Form submit
         document.getElementById('vinylForm').addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -622,13 +621,11 @@
                 currentValue: parseFloat(document.getElementById('currentValue').value) || 0,
                 label: document.getElementById('label').value,
                 tracklist: document.getElementById('tracklist').value,
-                notes: document.getElementById('notes').value,
                 cover: document.querySelector('#coverPreview img')?.src || ''
             };
 
             if (editingId) {
-                const index = vinyls.findIndex(v => v.id === editingId);
-                vinyls[index] = vinyl;
+                vinyls[vinyls.findIndex(v => v.id === editingId)] = vinyl;
             } else {
                 vinyls.push(vinyl);
             }
