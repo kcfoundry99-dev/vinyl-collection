@@ -16,14 +16,10 @@
             --blue: #4895ef;
             --gold: #d4a574;
             --text: #ffffff;
-            --text-muted: #8a8a9a;
+            --text-muted: #6a6a7a;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Outfit', 'Noto Sans TC', sans-serif;
@@ -33,302 +29,198 @@
             -webkit-font-smoothing: antialiased;
         }
         
-        /* Camera View */
         .camera-container {
             position: relative;
             width: 100%;
-            max-width: 400px;
+            max-width: 380px;
             aspect-ratio: 1;
             margin: 0 auto;
-            border-radius: 24px;
+            border-radius: 20px;
             overflow: hidden;
-            background: #1a1a24;
+            background: #0f0f18;
         }
         
-        #cameraPreview {
+        #cameraPreview, #imagePreview {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
         
-        .camera-overlay {
+        .camera-frame {
             position: absolute;
-            inset: 0;
+            inset: 24px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
             pointer-events: none;
         }
         
-        .camera-overlay::before {
-            content: '';
-            position: absolute;
-            inset: 20px;
-            border: 2px dashed rgba(255,255,255,0.3);
-            border-radius: 16px;
-        }
-        
-        .corner-markers {
-            position: absolute;
-            inset: 30px;
-        }
-        
-        .corner {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border: 3px solid var(--gold);
-        }
-        
-        .corner.tl { top: 0; left: 0; border-right: none; border-bottom: none; }
-        .corner.tr { top: 0; right: 0; border-left: none; border-bottom: none; }
-        .corner.bl { bottom: 0; left: 0; border-right: none; border-top: none; }
-        .corner.br { bottom: 0; right: 0; border-left: none; border-top: none; }
-        
-        /* Result Cards */
-        .result-card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            overflow: hidden;
-        }
-        
-        .cover-crop {
-            width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
-        }
-        
-        .label-crop {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--gold);
+        .btn {
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
         }
         
         .btn-primary {
             background: var(--red);
             color: white;
-            padding: 18px 28px;
-            border-radius: 16px;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(230, 57, 70, 0.4);
         }
         
         .btn-secondary {
             background: var(--blue);
             color: white;
-            padding: 18px 28px;
-            border-radius: 16px;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-        }
-        
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(72, 149, 239, 0.4);
         }
         
         .btn-ghost {
             background: transparent;
-            color: var(--text-muted);
-            padding: 14px 20px;
-            border-radius: 12px;
-            font-weight: 500;
-            font-size: 14px;
             border: 1px solid #2a2a35;
-            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+        
+        .result-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .cover-square {
             width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
         }
         
-        .btn-ghost:hover {
-            background: #1e1e28;
-            color: var(--text);
+        .label-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--gold);
         }
         
-        .scan-line {
+        .scan-animation {
             position: absolute;
-            left: 0;
-            right: 0;
-            height: 2px;
+            left: 24px;
+            right: 24px;
+            height: 1px;
             background: linear-gradient(90deg, transparent, var(--gold), transparent);
-            animation: scan 2s linear infinite;
+            animation: scan 2s ease-in-out infinite;
         }
         
         @keyframes scan {
-            0% { top: 0; }
-            100% { top: 100%; }
+            0%, 100% { top: 24px; }
+            50% { top: calc(100% - 24px); }
         }
         
-        .processing {
-            animation: pulse 1.5s ease-in-out infinite;
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #2a2a35;
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <!-- Header -->
-    <header class="sticky top-0 bg-[#0a0a0f]/90 backdrop-blur-md z-50 border-b border-[#1e1e28]">
+    <header class="sticky top-0 bg-[#0a0a0f]/95 backdrop-blur-sm z-50 border-b border-[#1a1a24]">
         <div class="flex justify-between items-center px-6 py-4">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-[#e63946] flex items-center justify-center">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-                        <circle cx="12" cy="12" r="10" fill="#1a1a1a"/>
-                        <circle cx="12" cy="12" r="3" fill="#fff"/>
-                        <circle cx="12" cy="12" r="1" fill="#000"/>
-                    </svg>
-                </div>
-                <span class="font-semibold text-lg tracking-wide">X FOUNDRY</span>
+                <div class="w-8 h-8 rounded bg-[#e63946]"></div>
+                <span class="font-medium text-base tracking-wide">X FOUNDRY</span>
             </div>
-            <div class="text-sm text-[#8a8a9a]" id="collectionCount">0 records</div>
+            <span class="text-xs text-[#6a6a7a]" id="collectionCount">0 records</span>
         </div>
     </header>
 
-    <!-- Main Scanner Section -->
-    <section class="py-8 px-6">
-        <!-- Camera / Upload Area -->
+    <!-- Main -->
+    <section class="py-8 px-5">
+        <!-- Camera -->
         <div class="camera-container mb-6" id="cameraContainer">
             <video id="cameraPreview" autoplay playsinline class="hidden"></video>
-            <img id="imagePreview" class="w-full h-full object-cover hidden">
-            <canvas id="processCanvas" class="hidden"></canvas>
+            <img id="imagePreview" class="hidden w-full h-full object-cover">
             
-            <div class="camera-overlay" id="cameraOverlay">
-                <div class="corner-markers" id="cornerMarkers">
-                    <div class="corner tl"></div>
-                    <div class="corner tr"></div>
-                    <div class="corner bl"></div>
-                    <div class="corner br"></div>
-                </div>
-                <div class="scan-line hidden" id="scanLine"></div>
-            </div>
+            <div class="camera-frame"></div>
+            <div class="scan-animation hidden" id="scanAnimation"></div>
             
-            <!-- Placeholder -->
             <div id="placeholder" class="absolute inset-0 flex flex-col items-center justify-center">
-                <div class="w-20 h-20 rounded-full bg-[#1e1e28] flex items-center justify-center mb-4">
-                    <svg width="40" height="40" fill="none" stroke="#8a8a9a" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                </div>
-                <p class="text-[#8a8a9a] text-center">Take a photo or upload image<br>to identify your vinyl</p>
+                <div class="w-16 h-16 rounded-full bg-[#12121a] mb-4"></div>
+                <p class="text-sm text-[#6a6a7a] text-center">Take a photo or upload<br>to identify your vinyl</p>
             </div>
             
-            <!-- Processing -->
-            <div id="processingOverlay" class="absolute inset-0 bg-[#0a0a0f]/90 flex flex-col items-center justify-center hidden">
-                <div class="w-16 h-16 rounded-full border-4 border-[#d4a574] border-t-transparent processing mb-4"></div>
-                <p class="text-lg font-semibold mb-2">Analyzing...</p>
-                <p class="text-sm text-[#8a8a9a]" id="processStatus">Detecting vinyl record</p>
+            <div id="processingOverlay" class="absolute inset-0 bg-[#0a0a0f]/95 flex flex-col items-center justify-center hidden">
+                <div class="spinner mb-4"></div>
+                <p class="text-sm font-medium mb-1">Analyzing</p>
+                <p class="text-xs text-[#6a6a7a]" id="processStatus">Detecting record...</p>
             </div>
         </div>
         
-        <!-- Action Buttons -->
+        <!-- Actions -->
         <div class="space-y-3 mb-8">
-            <button onclick="startCamera()" class="btn-primary">
-                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                📷 Take Photo
-            </button>
-            
-            <button onclick="document.getElementById('fileInput').click()" class="btn-secondary">
-                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                🖼️ Upload Image
-            </button>
+            <button onclick="startCamera()" class="btn btn-primary w-full">Take Photo</button>
+            <button onclick="document.getElementById('fileInput').click()" class="btn btn-secondary w-full">Upload Image</button>
             <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
-            
-            <button onclick="manualSearch()" class="btn-ghost">
-                🔍 Or Search Manually
-            </button>
+            <button onclick="manualSearch()" class="btn btn-ghost w-full">Search Manually</button>
         </div>
         
-        <!-- Result Section -->
-        <div id="resultSection" class="hidden">
-            <h2 class="text-lg font-semibold mb-4">Identified Record</h2>
-            
-            <div class="result-card mb-6">
-                <!-- Cover Crop -->
-                <div class="relative">
-                    <img id="resultCover" class="cover-crop">
-                    <div class="absolute bottom-3 left-3 bg-black/70 px-3 py-1 rounded-full text-xs">
-                        Cover
-                    </div>
-                </div>
-                
-                <!-- Info -->
+        <!-- Result -->
+        <div id="resultSection" class="hidden mb-8">
+            <div class="result-card">
+                <img id="resultCover" class="cover-square">
                 <div class="p-5">
-                    <h3 class="text-xl font-bold mb-1" id="resultAlbum">Album Title</h3>
-                    <p class="text-[#8a8a9a] mb-4" id="resultArtist">Artist</p>
+                    <h3 class="text-lg font-semibold mb-1" id="resultAlbum">Album</h3>
+                    <p class="text-sm text-[#6a6a7a] mb-4" id="resultArtist">Artist</p>
                     
-                    <!-- Label Crop -->
                     <div class="flex items-center gap-4 mb-4">
-                        <img id="resultLabel" class="label-crop" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%231a1a24'/%3E%3Ccircle cx='50' cy='50' r='15' fill='%23d4a574'/%3E%3C/svg%3E">
+                        <img id="resultLabel" class="label-circle">
                         <div>
-                            <p class="text-xs text-[#8a8a9a]">Label</p>
+                            <p class="text-xs text-[#6a6a7a]">Label</p>
                             <p class="text-sm" id="resultLabelName">—</p>
                         </div>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-3 mb-4">
-                        <div class="bg-[#1e1e28] rounded-lg p-3">
-                            <p class="text-xs text-[#8a8a9a]">Year</p>
-                            <p class="font-semibold" id="resultYear">—</p>
+                        <div class="bg-[#1a1a24] rounded-lg p-3">
+                            <p class="text-xs text-[#6a6a7a]">Year</p>
+                            <p class="font-medium" id="resultYear">—</p>
                         </div>
-                        <div class="bg-[#1e1e28] rounded-lg p-3">
-                            <p class="text-xs text-[#8a8a9a]">Format</p>
-                            <p class="font-semibold" id="resultFormat">LP</p>
+                        <div class="bg-[#1a1a24] rounded-lg p-3">
+                            <p class="text-xs text-[#6a6a7a]">Format</p>
+                            <p class="font-medium">LP</p>
                         </div>
                     </div>
                     
-                    <div class="flex gap-3">
-                        <button onclick="addToCollection()" class="btn-primary flex-1">
-                            ✓ Add to Collection
-                        </button>
-                    </div>
+                    <button onclick="addToCollection()" class="btn btn-primary w-full">Add to Collection</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Collection Section -->
-    <section class="px-6 pb-12">
+    <!-- Collection -->
+    <section class="px-5 pb-12">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold">My Collection</h2>
-            <button onclick="openCollection()" class="text-sm text-[#d4a574]">View All →</button>
+            <h2 class="text-base font-medium">Collection</h2>
+            <button onclick="openCollection()" class="text-xs text-[#d4a574]">View All</button>
         </div>
         
-        <div id="collectionGrid" class="grid grid-cols-3 gap-3">
+        <div id="collectionGrid" class="grid grid-cols-3 gap-2">
         </div>
     </section>
 
-    <!-- Collection Modal -->
-    <div id="collectionModal" class="fixed inset-0 bg-black/90 hidden z-50 overflow-y-auto">
-        <div class="p-6">
+    <!-- Modal -->
+    <div id="collectionModal" class="fixed inset-0 bg-black/95 hidden z-50 overflow-y-auto">
+        <div class="p-5">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold">My Collection</h2>
-                <button onclick="closeCollection()" class="text-[#8a8a9a]">
+                <h2 class="text-lg font-medium">Collection</h2>
+                <button onclick="closeCollection()" class="text-[#6a6a7a]">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
@@ -340,52 +232,28 @@
 
     <script>
         let vinyls = [
-            {
-                id: 1,
-                album: "Kind of Blue",
-                artist: "Miles Davis",
-                year: 1959,
-                format: "LP",
-                cover: "https://upload.wikimedia.org/wikipedia/en/9/9c/MilesDavisKindofBlue.jpg",
-                purchasePrice: 1200,
-                currentValue: 4500,
-                label: "Columbia"
-            }
+            { id: 1, album: "Kind of Blue", artist: "Miles Davis", year: 1959, format: "LP", cover: "https://upload.wikimedia.org/wikipedia/en/9/9c/MilesDavisKindofBlue.jpg", label: "Columbia" }
         ];
-
-        let currentImage = null;
+        
         let stream = null;
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             updateCollectionCount();
             renderCollection();
         });
 
-        // Camera
         async function startCamera() {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'environment' } 
-                });
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                 const video = document.getElementById('cameraPreview');
                 video.srcObject = stream;
                 video.classList.remove('hidden');
                 document.getElementById('placeholder').classList.add('hidden');
-                document.getElementById('imagePreview').classList.add('hidden');
             } catch (err) {
-                alert('無法開啟相機，請選擇上傳圖片');
+                alert('Cannot access camera');
             }
         }
 
-        function stopCamera() {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
-            }
-        }
-
-        // File Upload
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (file) {
@@ -396,35 +264,22 @@
                     img.classList.remove('hidden');
                     document.getElementById('cameraPreview').classList.add('hidden');
                     document.getElementById('placeholder').classList.add('hidden');
-                    currentImage = e.target.result;
-                    
-                    // Auto process
-                    setTimeout(() => processImage(e.target.result), 500);
+                    setTimeout(() => processImage(e.target.result), 300);
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        // Process Image - Simulate AI Recognition
         async function processImage(imageSrc) {
             document.getElementById('processingOverlay').classList.remove('hidden');
-            document.getElementById('scanLine').classList.remove('hidden');
+            document.getElementById('scanAnimation').classList.remove('hidden');
             
-            // Simulate AI processing
-            const steps = [
-                'Detecting vinyl record...',
-                'Analyzing cover art...',
-                'Identifying label...',
-                'Searching database...',
-                'Complete!'
-            ];
-            
+            const steps = ['Detecting...', 'Analyzing...', 'Searching...', 'Complete'];
             for (let i = 0; i < steps.length; i++) {
                 document.getElementById('processStatus').textContent = steps[i];
-                await new Promise(r => setTimeout(r, 600));
+                await new Promise(r => setTimeout(r, 500));
             }
             
-            // Generate result (simulated)
             const mockResults = [
                 { album: "Kind of Blue", artist: "Miles Davis", year: 1959, label: "Columbia" },
                 { album: "Blue Train", artist: "John Coltrane", year: 1958, label: "Blue Note" },
@@ -435,137 +290,103 @@
             
             const result = mockResults[Math.floor(Math.random() * mockResults.length)];
             
-            // Crop cover to square
             cropToSquare(imageSrc, 'resultCover');
+            setTimeout(() => cropToCircle(imageSrc, 'resultLabel'), 200);
             
-            // Generate label (center crop)
-            setTimeout(() => {
-                cropToCircle(imageSrc, 'resultLabel');
-            }, 300);
-            
-            // Fill info
             document.getElementById('resultAlbum').textContent = result.album;
             document.getElementById('resultArtist').textContent = result.artist;
             document.getElementById('resultYear').textContent = result.year;
             document.getElementById('resultLabelName').textContent = result.label;
             
             document.getElementById('processingOverlay').classList.add('hidden');
-            document.getElementById('scanLine').classList.add('hidden');
+            document.getElementById('scanAnimation').classList.add('hidden');
             document.getElementById('resultSection').classList.remove('hidden');
             
-            // Stop camera if running
-            stopCamera();
+            if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
         }
 
-        // Crop to square
-        function cropToSquare(imageSrc, targetId) {
+        function cropToSquare(src, id) {
             const img = new Image();
-            img.onload = function() {
-                const canvas = document.getElementById('processCanvas');
-                const ctx = canvas.getContext('2d');
-                const size = Math.min(img.width, img.height);
-                const x = (img.width - size) / 2;
-                const y = (img.height - size) / 2;
-                
-                canvas.width = 400;
-                canvas.height = 400;
-                ctx.drawImage(img, x, y, size, size, 0, 0, 400, 400);
-                
-                document.getElementById(targetId).src = canvas.toDataURL();
+            img.onload = () => {
+                const c = document.createElement('canvas');
+                const ctx = c.getContext('2d');
+                const s = Math.min(img.width, img.height);
+                c.width = c.height = 400;
+                ctx.drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, 400, 400);
+                document.getElementById(id).src = c.toDataURL();
             };
-            img.src = imageSrc;
+            img.src = src;
         }
 
-        // Crop to circle (for label)
-        function cropToCircle(imageSrc, targetId) {
+        function cropToCircle(src, id) {
             const img = new Image();
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                
-                const size = Math.min(img.width, img.height);
-                const x = (img.width - size) / 2;
-                const y = (img.height - size) / 2;
-                
-                canvas.width = 120;
-                canvas.height = 120;
-                
+            img.onload = () => {
+                const c = document.createElement('canvas');
+                const ctx = c.getContext('2d');
+                const s = Math.min(img.width, img.height);
+                c.width = c.height = 100;
                 ctx.beginPath();
-                ctx.arc(60, 60, 60, 0, Math.PI * 2);
-                ctx.closePath();
+                ctx.arc(50, 50, 50, 0, Math.PI*2);
                 ctx.clip();
-                
-                ctx.drawImage(img, x, y, size, size, 0, 0, 120, 120);
-                
-                document.getElementById(targetId).src = canvas.toDataURL();
+                ctx.drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, 100, 100);
+                document.getElementById(id).src = c.toDataURL();
             };
-            img.src = imageSrc;
+            img.src = src;
         }
 
-        // Manual Search
         function manualSearch() {
-            const searchTerm = prompt('Enter album or artist:');
-            if (searchTerm) {
-                // Show processing
-                document.getElementById('processingOverlay').classList.remove('hidden');
-                
-                fetch(`https://api.discogs.com/database/search?q=${encodeURIComponent(searchTerm)}&type=release&per_page=1`, {
-                    headers: { 'User-Agent': 'XFoundryVinyl/1.0' }
-                })
-                .then(r => r.json())
-                .then(async data => {
-                    if (data.results && data.results.length > 0) {
-                        const release = await fetch(`https://api.discogs.com/releases/${data.results[0].id}`, {
-                            headers: { 'User-Agent': 'XFoundryVinyl/1.0' }
-                        }).then(r => r.json());
-                        
-                        document.getElementById('resultAlbum').textContent = release.title || '';
-                        const artistMatch = release.title?.match(/^(.+?)\s*-/);
-                        document.getElementById('resultArtist').textContent = artistMatch ? artistMatch[1].trim() : '';
-                        document.getElementById('resultYear').textContent = release.year || '—';
-                        document.getElementById('resultLabelName').textContent = release.label?.[0] || '—';
-                        
-                        if (release.images?.[0]) {
-                            cropToSquare(release.images[0].uri, 'resultCover');
-                            cropToCircle(release.images[0].uri, 'resultLabel');
-                        }
-                        
-                        document.getElementById('resultSection').classList.remove('hidden');
-                    } else {
-                        alert('No results found');
+            const q = prompt('Search album or artist:');
+            if (!q) return;
+            
+            document.getElementById('processingOverlay').classList.remove('hidden');
+            
+            fetch(`https://api.discogs.com/database/search?q=${encodeURIComponent(q)}&type=release&per_page=1`, {
+                headers: { 'User-Agent': 'XFoundry/1.0' }
+            })
+            .then(r => r.json())
+            .then(async data => {
+                if (data.results?.[0]) {
+                    const r = await fetch(`https://api.discogs.com/releases/${data.results[0].id}`, {
+                        headers: { 'User-Agent': 'XFoundry/1.0' }
+                    }).then(x => x.json());
+                    
+                    document.getElementById('resultAlbum').textContent = r.title || '';
+                    document.getElementById('resultArtist').textContent = r.title?.match(/^(.+?)\s*-/)?.[1] || '';
+                    document.getElementById('resultYear').textContent = r.year || '—';
+                    document.getElementById('resultLabelName').textContent = r.label?.[0] || '—';
+                    
+                    if (r.images?.[0]) {
+                        cropToSquare(r.images[0].uri, 'resultCover');
+                        cropToCircle(r.images[0].uri, 'resultLabel');
                     }
-                })
-                .catch(err => alert('Search failed'))
-                .finally(() => {
-                    document.getElementById('processingOverlay').classList.add('hidden');
-                });
-            }
+                    
+                    document.getElementById('resultSection').classList.remove('hidden');
+                } else {
+                    alert('No results');
+                }
+            })
+            .catch(() => alert('Search failed'))
+            .finally(() => document.getElementById('processingOverlay').classList.add('hidden'));
         }
 
-        // Add to Collection
         function addToCollection() {
-            const vinyl = {
+            vinyls.push({
                 id: Date.now(),
                 album: document.getElementById('resultAlbum').textContent,
                 artist: document.getElementById('resultArtist').textContent,
                 year: document.getElementById('resultYear').textContent,
-                format: document.getElementById('resultFormat').textContent,
+                format: "LP",
                 cover: document.getElementById('resultCover').src,
-                label: document.getElementById('resultLabelName').textContent,
-                purchasePrice: 0,
-                currentValue: 0
-            };
+                label: document.getElementById('resultLabelName').textContent
+            });
             
-            vinyls.push(vinyl);
             updateCollectionCount();
             renderCollection();
-            
-            alert('Added to collection!');
+            alert('Added');
             document.getElementById('resultSection').classList.add('hidden');
             document.getElementById('placeholder').classList.remove('hidden');
         }
 
-        // Collection functions
         function updateCollectionCount() {
             document.getElementById('collectionCount').textContent = `${vinyls.length} records`;
         }
@@ -574,35 +395,25 @@
             const grid = document.getElementById('collectionGrid');
             const fullGrid = document.getElementById('fullCollectionGrid');
             
-            const displayVinyls = vinyls.slice(0, 6);
-            
-            grid.innerHTML = displayVinyls.map(v => `
-                <div class="aspect-square bg-[#1e1e28] rounded-lg overflow-hidden">
-                    ${v.cover ? 
-                        `<img src="${v.cover}" class="w-full h-full object-cover">` : 
-                        `<div class="w-full h-full flex items-center justify-center text-2xl">💿</div>`
-                    }
+            grid.innerHTML = vinyls.slice(0, 6).map(v => `
+                <div class="aspect-square bg-[#12121a] rounded-lg overflow-hidden">
+                    ${v.cover ? `<img src="${v.cover}" class="w-full h-full object-cover">` : ''}
                 </div>
             `).join('');
             
             fullGrid.innerHTML = vinyls.map(v => `
                 <div class="result-card">
-                    <img src="${v.cover || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%231e1e28%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%238a8a9a%22 font-size=%2230%22%3E💿%3C/text%3E%3C/svg%3E'}" class="w-full aspect-square object-cover">
+                    <img src="${v.cover || ''}" class="w-full aspect-square object-cover">
                     <div class="p-3">
-                        <h3 class="font-semibold text-sm truncate">${v.album}</h3>
-                        <p class="text-xs text-[#8a8a9a] truncate">${v.artist}</p>
+                        <h3 class="text-sm font-medium truncate">${v.album}</h3>
+                        <p class="text-xs text-[#6a6a7a] truncate">${v.artist}</p>
                     </div>
                 </div>
             `).join('');
         }
 
-        function openCollection() {
-            document.getElementById('collectionModal').classList.remove('hidden');
-        }
-
-        function closeCollection() {
-            document.getElementById('collectionModal').classList.add('hidden');
-        }
+        function openCollection() { document.getElementById('collectionModal').classList.remove('hidden'); }
+        function closeCollection() { document.getElementById('collectionModal').classList.add('hidden'); }
     </script>
 </body>
 </html>
