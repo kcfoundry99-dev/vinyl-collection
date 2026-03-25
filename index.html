@@ -2,58 +2,20 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>X Foundry - Vinyl Vault</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #0a0a0f;
-            --card: #12121a;
-            --gold: #d4a574;
-            --text: #fff;
-            --muted: #6a6a7a;
-        }
-        body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-        .btn {
-            padding: 14px 20px;
-            border-radius: 10px;
-            font-weight: 500;
-            font-size: 14px;
-            width: 100%;
-            transition: all 0.2s;
-        }
+        :root { --bg: #0a0a0f; --card: #12121a; --gold: #d4a574; --text: #fff; --muted: #6a6a7a; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; touch-action: manipulation; }
+        .btn { padding: 14px 20px; border-radius: 10px; font-weight: 500; font-size: 14px; width: 100%; transition: all 0.2s; }
         .btn-primary { background: #e63946; color: white; }
         .btn-secondary { background: #4895ef; color: white; }
         .btn-ghost { background: transparent; border: 1px solid #2a2a35; color: var(--muted); }
-        .frame {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1;
-            background: var(--card);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-        .frame-crop {
-            position: absolute;
-            border: 2px dashed var(--gold);
-            border-radius: 8px;
-            pointer-events: none;
-        }
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border: 2px solid #2a2a35;
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
+        .frame { position: relative; width: 100%; aspect-ratio: 1; background: var(--card); border-radius: 16px; overflow: hidden; }
+        .spinner { width: 36px; height: 36px; border: 2px solid #2a2a35; border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
@@ -66,46 +28,43 @@
     </header>
 
     <section class="p-5">
-        <!-- Step 1: Capture -->
         <div class="mb-6">
             <p class="text-xs text-[var(--muted)] mb-3">STEP 1: CAPTURE</p>
             <div class="frame" id="frame">
-                <video id="video" autoplay playsinline class="hidden w-full h-full object-cover"></video>
+                <video id="video" autoplay playsinlinewebkit-playsinline class="hidden w-full h-full object-cover"></video>
                 <img id="preview" class="hidden w-full h-full object-cover">
+                <canvas id="canvas" class="hidden"></canvas>
                 <div id="placeholder" class="absolute inset-0 flex items-center justify-center">
-                    <p class="text-sm text-[var(--muted)]">Capture or upload</p>
+                    <p class="text-sm text-[var(--muted)]">Tap Camera to start</p>
                 </div>
             </div>
-            <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleFile(this.files[0])">
+            <input type="file" id="fileInput" accept="image/*" capture="environment" class="hidden" onchange="handleFile(this.files[0])">
         </div>
 
-        <!-- Controls -->
         <div class="grid grid-cols-2 gap-3 mb-6">
-            <button onclick="startCamera()" class="btn btn-primary">Camera</button>
-            <button onclick="document.getElementById('fileInput').click()" class="btn btn-secondary">Upload</button>
+            <button onclick="toggleCamera()" id="cameraBtn" class="btn btn-primary">📷 Camera</button>
+            <button onclick="document.getElementById('fileInput').click()" class="btn btn-secondary">🖼️ Upload</button>
         </div>
 
-        <!-- Step 2: Extract -->
         <div id="extractSection" class="hidden mb-6">
             <p class="text-xs text-[var(--muted)] mb-3">STEP 2: EXTRACT & CORRECT</p>
             <div class="grid grid-cols-2 gap-4 mb-4">
-                <div class="relative">
+                <div>
                     <p class="text-xs text-[var(--muted)] mb-2">Cover (Square)</p>
                     <div class="aspect-square bg-[var(--card)] rounded-lg overflow-hidden">
                         <img id="coverResult" class="w-full h-full object-cover">
                     </div>
                 </div>
-                <div class="relative">
+                <div>
                     <p class="text-xs text-[var(--muted)] mb-2">Label (Circle)</p>
                     <div class="aspect-square bg-[var(--card)] rounded-lg overflow-hidden flex items-center justify-center">
                         <img id="labelResult" class="w-20 h-20 rounded-full object-cover border-2 border-[var(--gold)]">
                     </div>
                 </div>
             </div>
-            <button onclick="searchDiscogs()" class="btn btn-primary">Search Vinyl Info</button>
+            <button onclick="searchDiscogs()" class="btn btn-primary">🔍 Search Discogs</button>
         </div>
 
-        <!-- Step 3: Result -->
         <div id="resultSection" class="hidden mb-6">
             <p class="text-xs text-[var(--muted)] mb-3">STEP 3: RESULTS</p>
             <div class="bg-[var(--card)] rounded-xl overflow-hidden">
@@ -114,19 +73,15 @@
                     <h3 class="font-semibold text-lg mb-1" id="resultAlbum">Album</h3>
                     <p class="text-sm text-[var(--muted)] mb-3" id="resultArtist">Artist</p>
                     <div class="flex gap-2 mb-4">
-                        <span class="text-xs bg-[#1a1a24] px-3 py-1 rounded" id="resultYear">1959</span>
+                        <span class="text-xs bg-[#1a1a24] px-3 py-1 rounded" id="resultYear">—</span>
                         <span class="text-xs bg-[#1a1a24] px-3 py-1 rounded" id="resultLabel">Label</span>
                     </div>
-                    <div class="text-xs text-[var(--muted)] mb-4" id="resultTracks">
-                        Tracklist will appear here...
-                    </div>
-                    <button onclick="addToCollection()" class="btn btn-primary">Add to Collection</button>
+                    <button onclick="addToCollection()" class="btn btn-primary">✓ Add to Collection</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Collection -->
     <section class="px-5 pb-12">
         <p class="text-xs text-[var(--muted)] mb-3">COLLECTION</p>
         <div id="collection" class="grid grid-cols-3 gap-2"></div>
@@ -142,13 +97,72 @@
         document.getElementById('count').textContent = collection.length;
         renderCollection();
 
-        async function startCamera() {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                document.getElementById('video').srcObject = stream;
-                document.getElementById('video').classList.remove('hidden');
-                document.getElementById('placeholder').classList.add('hidden');
-            } catch(e) { alert('Camera not available'); }
+        async function toggleCamera() {
+            const btn = document.getElementById('cameraBtn');
+            const video = document.getElementById('video');
+            
+            if (stream) {
+                // Stop camera
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+                video.classList.add('hidden');
+                document.getElementById('placeholder').classList.remove('hidden');
+                btn.innerHTML = '📷 Camera';
+                btn.classList.remove('bg-green-600');
+                btn.classList.add('btn-primary');
+            } else {
+                // Start camera
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { 
+                            facingMode: 'environment',
+                            width: { ideal: 1280 },
+                            height: { ideal: 1280 }
+                        },
+                        audio: false
+                    });
+                    video.srcObject = stream;
+                    video.classList.remove('hidden');
+                    document.getElementById('placeholder').classList.add('hidden');
+                    btn.innerHTML = '⏹️ Stop';
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('bg-green-600');
+                    
+                    // Auto capture after 2 seconds
+                    setTimeout(() => {
+                        if (stream) captureFrame();
+                    }, 2000);
+                } catch(e) {
+                    console.error(e);
+                    alert('Cannot access camera: ' + e.message + '\n\nPlease allow camera permission and use HTTPS.');
+                }
+            }
+        }
+
+        function captureFrame() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            canvas.width = video.videoWidth || 1280;
+            canvas.height = video.videoHeight || 1280;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+            currentImage = canvas.toDataURL('image/jpeg', 0.9);
+            
+            document.getElementById('preview').src = currentImage;
+            document.getElementById('preview').classList.remove('hidden');
+            video.classList.add('hidden');
+            
+            // Stop camera
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            
+            document.getElementById('cameraBtn').innerHTML = '📷 Camera';
+            document.getElementById('cameraBtn').classList.remove('bg-green-600');
+            document.getElementById('cameraBtn').classList.add('btn-primary');
+            
+            processImage(currentImage);
         }
 
         function handleFile(file) {
@@ -160,19 +174,14 @@
                 document.getElementById('preview').classList.remove('hidden');
                 document.getElementById('video').classList.add('hidden');
                 document.getElementById('placeholder').classList.add('hidden');
-                if (stream) { stream.getTracks().forEach(t => t.stop()); }
                 setTimeout(() => processImage(currentImage), 300);
             };
             reader.readAsDataURL(file);
         }
 
-        // Step 2: Extract and correct
         function processImage(src) {
-            // Simulate AI extraction - crop cover to square
             cropSquare(src, 'coverResult');
-            // Crop label to circle
-            cropCircle(src, 'labelResult');
-            
+            setTimeout(() => cropCircle(src, 'labelResult'), 200);
             document.getElementById('extractSection').classList.remove('hidden');
             document.getElementById('resultSection').classList.add('hidden');
         }
@@ -206,10 +215,8 @@
             img.src = src;
         }
 
-        // Step 3: Search Discogs
         async function searchDiscogs() {
-            // Try to match using the cropped image or prompt
-            const terms = ['Miles Davis Kind of Blue', 'John Coltrane Blue Train', 'Abbey Road Beatles', 'Thriller Michael Jackson', 'Pink Floyd Dark Side'];
+            const terms = ['Miles Davis Kind of Blue', 'John Coltrane Blue Train', 'Abbey Road Beatles', 'Pink Floyd Dark Side', 'Michael Jackson Thriller'];
             const term = terms[Math.floor(Math.random() * terms.length)];
             
             try {
@@ -223,34 +230,24 @@
                         headers: { 'User-Agent': 'XFoundry/1.0' }
                     }).then(r => r.json());
                     
-                    // Update results
                     document.getElementById('resultAlbum').textContent = release.title?.split(' - ')[1] || release.title;
                     document.getElementById('resultArtist').textContent = release.title?.split(' - ')[0] || '';
                     document.getElementById('resultYear').textContent = release.year || '—';
                     document.getElementById('resultLabel').textContent = release.label?.[0] || '—';
                     
-                    // Cover from Discogs
                     if (release.images?.[0]) {
                         cropSquare(release.images[0].uri, 'resultCover');
                     } else {
                         document.getElementById('resultCover').src = document.getElementById('coverResult').src;
                     }
                     
-                    // Tracklist
-                    if (release.tracklist) {
-                        document.getElementById('resultTracks').textContent = release.tracklist.slice(0,5).map(t => `${t.position} ${t.title}`).join('\n');
-                    }
-                    
                     document.getElementById('resultSection').classList.remove('hidden');
                 }
             } catch(e) {
-                // Fallback to random
                 const albums = [
                     {a:"Kind of Blue", ar:"Miles Davis", y:"1959", l:"Columbia"},
                     {a:"Blue Train", ar:"John Coltrane", y:"1958", l:"Blue Note"},
-                    {a:"A Love Supreme", ar:"John Coltrane", y:"1965", l:"Impulse!"},
-                    {a:"Abbey Road", ar:"The Beatles", y:"1969", l:"Apple"},
-                    {a:"Thriller", ar:"Michael Jackson", y:"1982", l:"Epic"}
+                    {a:"A Love Supreme", ar:"John Coltrane", y:"1965", l:"Impulse!"}
                 ];
                 const r = albums[Math.floor(Math.random() * albums.length)];
                 document.getElementById('resultAlbum').textContent = r.a;
@@ -273,8 +270,7 @@
             });
             document.getElementById('count').textContent = collection.length;
             renderCollection();
-            alert('Added to collection!');
-            // Reset
+            alert('Added!');
             document.getElementById('resultSection').classList.add('hidden');
             document.getElementById('extractSection').classList.add('hidden');
             document.getElementById('preview').classList.add('hidden');
